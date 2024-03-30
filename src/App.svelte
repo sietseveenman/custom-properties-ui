@@ -1,0 +1,226 @@
+<script lang="ts">
+  import ColorPicker from 'svelte-awesome-color-picker'
+  import LengthInput from './lib/LengthInput.svelte';
+
+  import { type Props, type CustomProperty } from './types'
+  let { customProperties, initOpen, initVisible } : Props = $props();
+
+  let isVisible = $state(initVisible)
+  let isOpen = $state(initOpen)
+
+  let style = $derived(
+  `<style>
+    :root { 
+        ${ customProperties.map(property => {
+          const value = property.linked ? `var(${property.linked})` : property.value
+          return property.value ? `${ property.key }:${ value };\n\t\t` : ''
+        }).join('') }
+    }
+  </style>`)
+
+  let pressedKeys = <string[]>[];
+
+  document.addEventListener('keydown', function(event) {
+    if ( event.repeat ) return;
+    if ( ! pressedKeys.includes(event.key) ){
+      pressedKeys.push(event.key)
+    }
+    if (pressedKeys.includes('c') && pressedKeys.includes('u')) {
+      isVisible =! isVisible
+    }
+  });
+
+  document.addEventListener('keyup', function(event) {
+    pressedKeys = pressedKeys.filter(key => key !== event.key)
+  });
+
+  function handleLink(event:Event, property:CustomProperty) {
+    const selectedValue: string = (event.target as HTMLSelectElement).value;
+    property.linked = selectedValue
+  }
+
+</script>
+
+<div class={ `cp-ui ${isOpen ? 'is-open' : ''}` } style="{ isVisible ? '' : 'display: none;'}">
+
+  {#if isOpen}
+    <div class="properties">
+      {#each customProperties as property }
+
+        {#if property.initialValue !== ''}
+
+          <div class="property">
+
+            <div class="handle">
+              <span>{ property.key }</span>
+              <label>
+                {#if property.linked }
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-unlink-2"><path d="M15 7h2a5 5 0 0 1 0 10h-2m-6 0H7A5 5 0 0 1 7 7h2"/></svg>
+                {:else }
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-link-2"><path d="M9 17H7A5 5 0 0 1 7 7h2"/><path d="M15 7h2a5 5 0 1 1 0 10h-2"/><line x1="8" x2="16" y1="12" y2="12"/></svg>
+                {/if }
+                <select on:change={(event)=>handleLink(event, property)}>
+                  <option value=''>{ property.linked ? 'unlink' : 'unlinked'}</option>
+                  {#each customProperties as otherProperty }
+                    {#if property.key !== otherProperty.key && property.type === otherProperty.type }
+                      <option value={otherProperty.key}>{otherProperty.key }</option>
+                    {/if }
+                  {/each }
+                </select>
+              </label>
+            </div>
+            
+            
+            {#if property.linked }
+
+              <div class="linked">var({property.linked})</div>
+
+            {:else if property.type === 'color' }
+
+              <ColorPicker 
+                bind:hex={ property.value } 
+                label={ property.value }  
+                --picker-height="90px"
+                --input-size="16px"
+              />
+
+            {:else if property.type === 'length'}
+  
+              <LengthInput property={property}/>
+      
+            {:else if property.type === 'custom-property'}
+    
+              Custom
+    
+            {/if}
+
+          </div>
+
+        {:else}
+
+          <div class="property">
+            <span class="name">{ property.key }</span>
+            <small class="err">property is not defined in css</small>
+          </div>
+
+        {/if}
+
+      {/each}
+    </div>
+  {/if}
+
+  <button on:click={()=>isOpen = !isOpen} style={isOpen ? 'bottom:7px; right:7px; position: absolute;' : ''}>
+    {#if isOpen}
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-minimize-2"><polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="14" x2="21" y1="10" y2="3"/><line x1="3" x2="10" y1="21" y2="14"/></svg>
+    {:else}
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-maximize-2"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" x2="14" y1="3" y2="10"/><line x1="3" x2="10" y1="21" y2="14"/></svg>
+    {/if}
+  </button>
+
+</div>
+
+{@html style}
+
+
+
+<style scoped>
+
+  .cp-ui {
+    max-height: calc(100vh - 50px);
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    color: black;
+    font-family:'Courier New', Courier, monospace;
+    padding: 4px 4px 4px 2px;
+    border-bottom-right-radius: 5px;
+    
+    &.is-open {
+      min-width: 200px;
+      padding: 4px 0px 30px 2px;
+    }
+  }
+
+  button {
+    transition: .12s ease-in-out;
+    opacity: .6;
+    appearance: none;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    width: 16px;
+    
+    svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+
+  .properties {
+    max-height: 480px;
+    height: 100%;
+    /* overflow-y: auto; */
+    display: flex;
+    flex-direction: column;
+    padding: 0 10px 0 5px;
+  }
+  
+  .property {
+    display: flex;
+    flex-direction: column;
+    gap: .35em;
+    padding: 13px 8px;
+    font-size: 12px;
+    & + .property {
+      border-top: 1px solid rgba(0,0,0,.1);
+    }
+  }
+  .handle {
+    display: flex;
+    gap: .5em;
+    align-items: center;
+    svg {
+      display: block;
+      height: 0.9em;
+      width: auto;
+    }
+    label {
+      cursor: pointer;
+      position: relative;
+      background: rgba(0,0,0,0.1);
+      border-radius: 5px;
+      padding: 2px 4px;
+      
+      &:hover {
+        background: rgba(0,0,0,0.4);
+        color: white;
+      }
+
+      select {
+        opacity: 0;
+        cursor: pointer;
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        width: 100%;
+        height: 100%;
+      }
+    }
+  }
+  .linked {
+    padding: .4em 0;
+  }
+  .err {
+    opacity: .9;
+    max-width: 100px;
+    line-height: 1.35;
+  }
+ 
+</style>

@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Custom property UI</title>
+    <link rel="stylesheet" href="/test.css">
+    <style>
+      * {
+        box-sizing: border-box;
+        padding: 0;
+        margin: 0;
+      }
+      :root {
+        --cc-whatever: pink;
+        --another-one: #5ed149;
+        --border-radius: 30px;
+        --font-size: 2em;
+        --heading-size: var(--font-size);
+      }
+      body {
+        font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+        background-color: hsl(20deg 5% 5%);
+        width: 100%;
+        min-height: 100vh;
+        display: grid;
+        align-items: center;
+        justify-items: end;
+        padding-right: 60px;
+        font-size: var(--font-size, 20px);
+      }
+      h1,h2,h3,h4,h5 {
+        font-size: 100%;
+      }
+      h1 {
+        color: var(--cc-whatever, white);
+        
+      }
+      h2 {
+        color: var(--another-one, white);
+      }
+      .unit { 
+        margin: 20px 0;
+        width: 200px;
+        height: 80px;
+        border-radius: var(--border-radius);
+        border: 1px dashed white;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="">
+      <h1>--cc-whatever</h1>
+      <h2>--another-one</h2>
+      <div class="unit"></div>
+    </div>
+    <script type="module" src="/src/main.svelte.ts"></script>
+  </body>
+</html>
