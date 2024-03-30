@@ -43,17 +43,27 @@
 
 <div class={ `cp-ui ${isOpen ? 'is-open' : ''}` } style="{ isVisible ? '' : 'display: none;'}">
 
+  <div class="top-bar">
+    <button class="toggle-btn" on:click={()=>isOpen = !isOpen}>
+      {#if isOpen}
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-minimize-2"><polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="14" x2="21" y1="10" y2="3"/><line x1="3" x2="10" y1="21" y2="14"/></svg>
+      {:else}
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-maximize-2"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" x2="14" y1="3" y2="10"/><line x1="3" x2="10" y1="21" y2="14"/></svg>
+      {/if}
+    </button>
+  </div>
+
   {#if isOpen}
     <div class="properties">
+
       {#each customProperties as property }
 
         {#if property.initialValue !== ''}
-
           <div class="property">
 
-            <div class="handle">
-              <span>{ property.key }</span>
-              <label>
+            <div class="property__name">
+              <span>{ property.key.slice(2) }</span>
+              <label class="property__link">
                 {#if property.linked }
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-link-2"><path d="M9 17H7A5 5 0 0 1 7 7h2"/><path d="M15 7h2a5 5 0 1 1 0 10h-2"/><line x1="8" x2="16" y1="12" y2="12"/></svg>
                 {:else }
@@ -70,86 +80,102 @@
               </label>
             </div>
             
-            
-            {#if property.linked }
-
-              <div class="linked">var({property.linked})</div>
-
-            {:else if property.type === 'color' }
-
-              <ColorPicker 
-                bind:hex={ property.value } 
-                label={ property.value }  
-                --picker-height="90px"
-                --input-size="16px"
-              />
-
-            {:else if property.type === 'length'}
+            <div class="property__value">
+              {#if property.linked }
   
-              <LengthInput property={property}/>
+                <div class="linked">var({property.linked})</div>
+  
+              {:else if property.type === 'color' }
+  
+                <div class="color-picker">
+                  <ColorPicker
+                    bind:hex={ property.value }
+                    label=""
+                    --picker-height="100px"
+                    --input-size="16px"
+                  />
+                  <span class="color-picker__value">{ property.value }</span>
+                </div>
+  
+              {:else if property.type === 'length'}
+    
+                <LengthInput property={property}/>
+        
+              {:else if property.type === 'custom-property'}
       
-            {:else if property.type === 'custom-property'}
-    
-              Custom
-    
-            {/if}
-
+                Custom
+      
+              {/if}
+            </div>
           </div>
 
         {:else}
 
           <div class="property">
-            <span class="name">{ property.key }</span>
+            <span class="name">{ property.key.slice(2) }</span>
             <small class="err">property is not defined in css</small>
           </div>
 
         {/if}
 
       {/each}
+
     </div>
   {/if}
-
-  <button on:click={()=>isOpen = !isOpen} style={isOpen ? 'bottom:7px; right:7px; position: absolute;' : ''}>
-    {#if isOpen}
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-minimize-2"><polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="14" x2="21" y1="10" y2="3"/><line x1="3" x2="10" y1="21" y2="14"/></svg>
-    {:else}
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-maximize-2"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" x2="14" y1="3" y2="10"/><line x1="3" x2="10" y1="21" y2="14"/></svg>
-    {/if}
-  </button>
-
 </div>
 
 {@html style}
 
-
-
-<style scoped>
+<style>
 
   .cp-ui {
-    max-height: calc(100vh - 50px);
-    background-color: white;
-    display: flex;
-    flex-direction: column;
-    color: black;
-    font-family:'Courier New', Courier, monospace;
-    font-family: sans-serif, monospace;
-    padding: 4px 4px 4px 2px;
+    --font-size: 10px;
+    --bg: #1e2021;
+    --lines: #665c54;
+    --text: #eadbb3;
+    --highlight: #8dc07c;
+    --highlight-sec:  #fbbd2e;
+
     border-bottom-right-radius: 5px;
     
+    font-family: sans-serif, monospace;
+    font-size: var(--font-size);
+    color: var(--text);
+    background-color: var(--bg,);
+    padding: 4px 4px 4px 2px;
+    
+    &:not(.is-open) {
+      width: 23px!important;
+      height: 23px!important;
+    }
+
     &.is-open {
-      min-width: 200px;
-      padding: 4px 0px 30px 2px;
+
+      /* padding: 20px 0 0 0; */
+    
+      resize: both;
+      overflow: auto;
+      min-height: 96px;
+      max-height: calc(100vh - 50px);
+      
+      min-width: 210px;
+      width: calc(220px * 3);
     }
   }
+  .top-bar {
+    padding: 2px 2px 6px 2px;
+    display: flex;
+    justify-content: space-between;
+  }
 
-  button {
+  .toggle-btn {
     transition: .12s ease-in-out;
     opacity: .6;
     appearance: none;
     background: transparent;
     border: none;
     cursor: pointer;
-    width: 16px;
+    width: 13px;
     
     svg {
       width: 100%;
@@ -163,49 +189,43 @@
   }
 
   .properties {
-    /* max-height: 480px; */
-    height: 100%;
-    /* overflow-y: auto; */
-    display: flex;
-    flex-direction: column;
-    padding: 0 10px 0 5px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   }
   
   .property {
+    height: 70px;
     display: flex;
     flex-direction: column;
+    justify-content: center;
     gap: .35em;
-    padding: 13px 8px;
-    font-size: 12px;
-    & + .property {
-      border-top: 1px solid rgba(0,0,0,.1);
-    }
+    padding: 11px 13px;
+    border: 1px solid var(--lines);
+    margin-top: -1px;
+    margin-left: -1px;
+    
   }
-  .handle {
+  .property__name {
     display: flex;
-    gap: .2em;
+    gap: .6em;
     align-items: center;
 
     &:has(select:focus) {
-      label {
-        outline: 1px solid blue;
-        color: blue;
+      .property__link {
+        color: var(--highlight-sec);
       }
     }
     svg {
       display: block;
-      height: 0.9em;
+      height: 1.3em;
       width: auto;
     }
-    label {
+    .property__link {
       cursor: pointer;
       position: relative;
-      background: rgba(0,0,0,0);
-      border-radius: 5px;
-      padding: 0 2px;
-      transform: translateY(.05em);
+      transform: translateY(.02em);
       &:hover {
-        background: rgba(0,0,0,0.1);
+        color: var(--highlight-sec);
       }
 
       select {
@@ -220,6 +240,20 @@
         height: 100%;
       }
     }
+  }
+  .property__value {
+
+  }
+  .color-picker {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transform: translateX(-4px);
+  }
+  .color-picker__value {
+    letter-spacing: 0.035em;
+    transform: translateY(.05em);
+    text-transform: uppercase;
   }
   .linked {
     padding: .4em 0;

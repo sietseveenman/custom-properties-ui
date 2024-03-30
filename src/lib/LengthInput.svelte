@@ -37,18 +37,19 @@
 
 <style scoped>
     .parsed {
+        
         display: flex;
-        /* align-items: center; */
         gap: 4px;
 
         input {
             background-color: transparent;
             color: inherit;
             margin: 0;
-            font-size: 11px;
             max-width: 4ch;
             border: none;
             line-height: .5;
+            font-size: var(--font-size);
+
             &::-webkit-outer-spin-button,
             &::-webkit-inner-spin-button {
                 -webkit-appearance: none;
@@ -59,16 +60,16 @@
                 cursor: pointer;
                 outline: none;
                 text-decoration: underline;
+                background: transparent;
+                color: var(--highlight);
             }
             &:hover {
                 font-weight: 500;
-                color: blue;
             }
 
         }
         .length-unit {
             position: relative;
-            font-size: 11px;
             span{
                 font-family: sans-serif;
            
@@ -83,7 +84,7 @@
             &:has(select:hover, select:focus) {
                 span {
                     font-weight: 500;
-                    color: blue;
+                    color: var(--highlight);
                     text-decoration: underline;
                     &:after {
                         opacity: 1;
@@ -102,7 +103,6 @@
                 top: 0;
                 cursor: pointer;
                 border: none;
-                font-size: 11px;
                 appearance: none;
                 width: auto;
                 text-align: left;
