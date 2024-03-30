@@ -152,18 +152,18 @@
     &.is-open {
 
       /* padding: 20px 0 0 0; */
-    
+      padding: 4px 0 0 0;
       resize: both;
       overflow: auto;
       min-height: 96px;
       max-height: calc(100vh - 50px);
       
-      min-width: 210px;
+      min-width: 180px;
       width: calc(220px * 3);
     }
   }
   .top-bar {
-    padding: 2px 2px 6px 2px;
+    padding: 2px 2px 6px 4px;
     display: flex;
     justify-content: space-between;
   }
