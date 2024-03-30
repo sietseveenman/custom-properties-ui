@@ -11,16 +11,31 @@
         padding: 0;
         margin: 0;
       }
+      
       :root {
-        --cc-whatever: pink;
-        --another-one: #5ed149;
+        font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+        line-height: 1.5;
+        font-weight: 400;
+  
+        color-scheme: light dark;
+        /* color: rgba(255, 255, 255, 0.87); */
+        /* background-color: #242424; */
+  
+        font-synthesis: none;
+        text-rendering: optimizeLegibility;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+
+        --color-primary: pink;
+        --color-secondary: #5ed149;
+        --color-tertiary: #6a20ff;
         --border-radius: 30px;
         --font-size: 2em;
         --heading-size: var(--font-size);
+        --border-color: rgb(64, 17, 129);
+        --border-width: 2px;
       }
       body {
-        font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-        background-color: hsl(20deg 5% 5%);
         width: 100%;
         min-height: 100vh;
         display: grid;
@@ -28,31 +43,36 @@
         justify-items: end;
         padding-right: 60px;
         font-size: var(--font-size, 20px);
+        background-color: rgb(248, 247, 245);
       }
       h1,h2,h3,h4,h5 {
         font-size: 100%;
+        text-align: center;
       }
       h1 {
-        color: var(--cc-whatever, white);
-        
+        color: var(--color-primary, black);
       }
       h2 {
-        color: var(--another-one, white);
+        color: var(--color-secondary, black);
       }
-      .unit { 
+      h3 {
+        color: var(--color-tertiary, black);
+      }
+      .shape { 
         margin: 20px 0;
         width: 200px;
         height: 80px;
         border-radius: var(--border-radius);
-        border: 1px dashed white;
+        border: var(--border-width) dashed var(--border-color);
       }
     </style>
   </head>
   <body>
     <div class="">
-      <h1>--cc-whatever</h1>
-      <h2>--another-one</h2>
-      <div class="unit"></div>
+      <h1>Jumping foxes</h1>
+      <h2>work all day</h2>
+      <h3>dance all night</h3>
+      <div class="shape"></div>
     </div>
     <script type="module" src="/src/main.svelte.ts"></script>
   </body>

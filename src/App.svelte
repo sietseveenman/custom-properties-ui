@@ -55,9 +55,9 @@
               <span>{ property.key }</span>
               <label>
                 {#if property.linked }
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-unlink-2"><path d="M15 7h2a5 5 0 0 1 0 10h-2m-6 0H7A5 5 0 0 1 7 7h2"/></svg>
-                {:else }
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-link-2"><path d="M9 17H7A5 5 0 0 1 7 7h2"/><path d="M15 7h2a5 5 0 1 1 0 10h-2"/><line x1="8" x2="16" y1="12" y2="12"/></svg>
+                {:else }
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-unlink-2"><path d="M15 7h2a5 5 0 0 1 0 10h-2m-6 0H7A5 5 0 0 1 7 7h2"/></svg>
                 {/if }
                 <select on:change={(event)=>handleLink(event, property)}>
                   <option value=''>{ property.linked ? 'unlink' : 'unlinked'}</option>
@@ -132,6 +132,7 @@
     flex-direction: column;
     color: black;
     font-family:'Courier New', Courier, monospace;
+    font-family: sans-serif, monospace;
     padding: 4px 4px 4px 2px;
     border-bottom-right-radius: 5px;
     
@@ -162,7 +163,7 @@
   }
 
   .properties {
-    max-height: 480px;
+    /* max-height: 480px; */
     height: 100%;
     /* overflow-y: auto; */
     display: flex;
@@ -182,8 +183,15 @@
   }
   .handle {
     display: flex;
-    gap: .5em;
+    gap: .2em;
     align-items: center;
+
+    &:has(select:focus) {
+      label {
+        outline: 1px solid blue;
+        color: blue;
+      }
+    }
     svg {
       display: block;
       height: 0.9em;
@@ -192,13 +200,12 @@
     label {
       cursor: pointer;
       position: relative;
-      background: rgba(0,0,0,0.1);
+      background: rgba(0,0,0,0);
       border-radius: 5px;
-      padding: 2px 4px;
-      
+      padding: 0 2px;
+      transform: translateY(.05em);
       &:hover {
-        background: rgba(0,0,0,0.4);
-        color: white;
+        background: rgba(0,0,0,0.1);
       }
 
       select {

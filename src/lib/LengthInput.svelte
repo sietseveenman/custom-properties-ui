@@ -18,14 +18,18 @@
     <div class="parsed">
         <input bind:value={parsedProperty.value} 
             type="number" 
-            step=".1" 
+            step={1}
             on:input={handleChange}
+            style={`width: ${String(parsedProperty.value).length}ch`}
         />
-        <select bind:value={parsedProperty.unit} on:change={handleChange}>
-            {#each lengthUnits as unit }
-                <option value={unit} selected={unit === parsedProperty.unit}>{ unit }</option>
-            {/each}
-        </select>
+        <span class="length-unit">
+            <span class="">{ parsedProperty.unit }</span>
+            <select bind:value={parsedProperty.unit} on:change={handleChange}>
+                {#each lengthUnits as unit }
+                    <option value={unit} selected={unit === parsedProperty.unit}>{ unit }</option>
+                {/each}
+            </select>
+        </span>
     </div>
 {:else}
     <input bind:value={property.value} />
@@ -34,33 +38,80 @@
 <style scoped>
     .parsed {
         display: flex;
+        /* align-items: center; */
         gap: 4px;
 
         input {
+            background-color: transparent;
+            color: inherit;
             margin: 0;
-            height: 20px;
-            border: 1px solid rgba(0,0,0,0.1);
-            border-radius: 4px;
             font-size: 11px;
-            padding-inline: .5em;
-            width: 7ch;
+            max-width: 4ch;
+            border: none;
+            line-height: .5;
             &::-webkit-outer-spin-button,
             &::-webkit-inner-spin-button {
                 -webkit-appearance: none;
                 margin: 0;
             }
-        }
+            &:focus, 
+            &:hover {
+                cursor: pointer;
+                outline: none;
+                text-decoration: underline;
+            }
+            &:hover {
+                font-weight: 500;
+                color: blue;
+            }
 
-        select {
-            height: 20px;
-            cursor: pointer;
-            border: 1px solid rgba(0,0,0,0.1);
-            border-radius: 4px;
+        }
+        .length-unit {
+            position: relative;
             font-size: 11px;
-            padding-inline: .5em;
-            appearance: none;
-            width: auto;
-            text-align: center;
+            span{
+                font-family: sans-serif;
+           
+                &::after {
+                    opacity: 0;
+                    content: '⌄';
+                    display: inline-block;
+                    padding-left: 0.2em;
+                    transform: translateY(-.2em);
+                }
+            }
+            &:has(select:hover, select:focus) {
+                span {
+                    font-weight: 500;
+                    color: blue;
+                    text-decoration: underline;
+                    &:after {
+                        opacity: 1;
+                    }
+                }
+            }
+            select {
+                opacity: 0;
+                height: 1em;
+                position: absolute;
+                left: 0;
+                right: 0;
+                width: 100%;
+                height: 100%;
+                bottom: 0;
+                top: 0;
+                cursor: pointer;
+                border: none;
+                font-size: 11px;
+                appearance: none;
+                width: auto;
+                text-align: left;
+    
+                &:focus, 
+                &:hover {
+                    outline: none;
+                }
+            }
         }
     }
 </style>
