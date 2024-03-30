@@ -183,8 +183,11 @@
       display: block;
     }
 
-    &:hover {
+    &:hover, 
+    &:focus-visible {
+      outline: none;
       opacity: 1;
+      color: var(--highlight-sec)
     }
   }
 

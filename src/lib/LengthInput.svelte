@@ -9,16 +9,25 @@
     function handleChange () {
         if ( ! parsedProperty ) return;
         if ( ! parsedProperty.value ) parsedProperty.value = 0 // Make sure input can not be null
-        console.log()
         property.value = `${parsedProperty.value}${parsedProperty.unit}`
     }
+    
+    let stepSize: string | number = $state('any')
 
+    document.addEventListener('keydown',(e) => {
+        if (e.altKey || e.metaKey) stepSize = .1;
+        else if (e.shiftKey) stepSize = 10;
+    })
+
+    document.addEventListener('keyup',(e) => {
+        stepSize = 'any'
+    })
 </script>
 {#if parsedProperty }
     <div class="parsed">
         <input bind:value={parsedProperty.value} 
             type="number" 
-            step={1}
+            step={stepSize}
             on:input={handleChange}
             style={`width: ${String(parsedProperty.value).length}ch`}
         />
