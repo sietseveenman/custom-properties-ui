@@ -1,8 +1,10 @@
 <script lang="ts">
-  import ColorPicker from 'svelte-awesome-color-picker'
+  import { tick } from 'svelte';
+	import ColorPicker, { ChromeVariant } from 'svelte-awesome-color-picker';
   import LengthInput from './lib/LengthInput.svelte';
-
-  import { type Props, type CustomProperty } from './types'
+  
+  import { type Props, type CustomProperty } from './types';
+  
   let { customProperties, initOpen, initVisible } : Props = $props();
 
   let isVisible = $state(initVisible)
@@ -38,6 +40,38 @@
     const selectedValue: string = (event.target as HTMLSelectElement).value;
     property.linked = selectedValue
   }
+
+  let colorPickerProps: {
+    property : null | CustomProperty ;
+    position: {x:number, y:number};
+  }= $state({
+    property: null,
+    position: {x:10, y:15}
+  });
+
+  let floatingPicker: HTMLElement;
+
+  function openColorPicker(property: CustomProperty, positionElement: null | Element) {
+    const positionElementRect = positionElement?.getBoundingClientRect()
+    colorPickerProps.property = property
+  
+    if ( positionElementRect ) {
+      let {x, y} = positionElementRect;
+      tick().then(() => {
+        let floatingWidth = floatingPicker?.getBoundingClientRect()?.width ?? 320
+        if (x + floatingWidth > window.innerWidth) {
+           x += window.innerWidth - (floatingWidth + x)
+        }
+        colorPickerProps.position = {x: x, y: y+15} 
+      })
+    }
+  }
+  
+  document.body.addEventListener('click', event => {
+    if( ! (event.target as HTMLElement)?.closest('.floating-picker') ) {
+      colorPickerProps.property = null
+    }
+  }, true)
 
 </script>
 
@@ -87,15 +121,10 @@
   
               {:else if property.type === 'color' }
   
-                <div class="color-picker">
-                  <ColorPicker
-                    bind:hex={ property.value }
-                    label=""
-                    --picker-height="100px"
-                    --input-size="16px"
-                  />
+                <button class="color-picker" on:click={(e)=>openColorPicker(property, e.target)}>
+                  <span class="color-picker__preview" style={`background: ${property.value}`}></span>
                   <span class="color-picker__value">{ property.value }</span>
-                </div>
+                </button>
   
               {:else if property.type === 'length'}
     
@@ -124,10 +153,24 @@
   {/if}
 </div>
 
+<div class="floating-picker" bind:this={floatingPicker}
+  style={`position: absolute; top: ${ colorPickerProps.position.y }px; left: ${ colorPickerProps.position.x }px;`}>
+  {#if colorPickerProps?.property }
+    <ColorPicker bind:hex={colorPickerProps.property.value}
+      components={ChromeVariant} 
+      sliderDirection="horizontal"
+      isDialog={false}
+      --picker-height="100px"
+    />
+    {/if}
+</div>
+
 {@html style}
 
 <style>
+  .floating-picker {
 
+  }
   .cp-ui {
     --font-size: 10px;
     --bg: #1e2021;
@@ -160,6 +203,7 @@
       
       min-width: 180px;
       width: calc(220px * 3);
+      max-width: calc(100vw - 15px);
     }
   }
   .top-bar {
@@ -245,13 +289,30 @@
     }
   }
   .property__value {
-
   }
   .color-picker {
     display: flex;
+    appearance: none;
+    background-color: transparent;
+    border: none;
+    font-size: inherit;
+    color: var(--text);
     align-items: center;
-    gap: 5px;
-    transform: translateX(-4px);
+    gap: 8px;
+    transform: translateX(-1px);
+    cursor: pointer;
+    &:focus {
+      outline: none;
+      .color-picker__value {
+        color: var(--highlight)
+      }
+    }
+  }
+  .color-picker__preview {
+    width: 1.35em;
+    height: 1.35em;
+    border-radius: 10000px;
+    border: 1px solid rgba(255,255,255,0.2);
   }
   .color-picker__value {
     letter-spacing: 0.035em;
