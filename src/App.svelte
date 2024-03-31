@@ -58,7 +58,7 @@
     if ( positionElementRect ) {
       let {x, y} = positionElementRect;
       tick().then(() => {
-        let floatingWidth = floatingPicker?.getBoundingClientRect()?.width ?? 320
+        let floatingWidth = floatingPicker?.getBoundingClientRect()?.width ?? 150
         if (x + floatingWidth > window.innerWidth) {
            x += window.innerWidth - (floatingWidth + x)
         }
@@ -157,10 +157,12 @@
   style={`position: absolute; top: ${ colorPickerProps.position.y }px; left: ${ colorPickerProps.position.x }px;`}>
   {#if colorPickerProps?.property }
     <ColorPicker bind:hex={colorPickerProps.property.value}
-      components={ChromeVariant} 
-      sliderDirection="horizontal"
       isDialog={false}
       --picker-height="100px"
+      --picker-width="130px"
+      --picker-indicator-size="12px"
+      --slider-width="12px"
+      --focus-color="#fbbd2e"         
     />
     {/if}
 </div>
@@ -168,9 +170,32 @@
 {@html style}
 
 <style>
+  /* .color-picker {
+    opacity: .5;
+    input {
+      font-size: 10px;
+    }
+  } */
   .floating-picker {
-
+    --cp-bg-color: #1e2021;
+		--cp-border-color: #665c54;
+		--cp-input-color: #1e2021;
+		--cp-button-hover-color: #1e2021;
   }
+  .floating-picker :global(input),
+  .floating-picker :global(button){
+    font-size: 10px;
+    color: #eadbb3;
+    border: 1px solid #665c54;
+    padding: .2em .3em;
+    margin: 0;
+    height: 17px;
+  }
+  .floating-picker :global(.text-input){
+    display: grid;
+    gap: 8px;
+  }
+
   .cp-ui {
     --font-size: 10px;
     --bg: #1e2021;
