@@ -1,6 +1,6 @@
 # Custom property UI
 
-A UI tool that lists and enables live updates of all custom properties set on the :root selector. You can provide handpicked properties to show in the UI. If you don't provide any properties, all properties found inside inline style tags and link tags will be rendered automaticaly.  
+A UI tool that lists and enables live updates of all custom properties set on the :root selector. You can provide handpicked properties to show in the UI. If you don't provide any properties, all properties found inside inline style tags and link tags will be parsed and used automaticaly.
 
 ## Roadmap
 
@@ -11,6 +11,7 @@ A UI tool that lists and enables live updates of all custom properties set on th
 -   Change number input values by scrolling and or dragging
 -   UI to to vissualy outline elements on the page that use a specific property.
 -   UI to show if the property is used on the current page.
+-   UI for property overwrites in nested selectors. Option to change value per selector level 
 
 -   Handle Nummeric values (sets) without unit, example: '255, 255, 255' or '1.05'.
 -   Handle Angle values: deg and turn.
