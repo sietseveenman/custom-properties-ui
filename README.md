@@ -6,14 +6,19 @@ Roadmap
 -   Draggable ui window 
 -   Settings / info button to open a modal
 -   Link properties by dragging
+-   Change number input values by scrolling and or dragging
 
--   Handle Nummeric values (sets) without unit, example: '255, 255, 255' or '1.05'
--   Handle Angle values: deg and turn
+-   Handle Nummeric values (sets) without unit, example: '255, 255, 255' or '1.05'.
+-   Handle Angle values: deg and turn.
 -   Handle values that use the calc() function.
--   Handle values that use min(), max() and or clamp() functions
--   Handle values that use trig functions, sin() and cos()
--   Color length toggling (hex, rgb, etc)
--   Option to switch to basic text input for every property, 
-    mainly useful as fallback for unknown types
+-   Handle values that use min(), max() and or clamp() functions.
+-   Handle values that use trig functions, sin() and cos().
+-   Color length toggling (hex, rgb, etc).
 -   If value is a custom property, find the related property and 
-    set the linked and type props accordingly 
+    set linked and type props accordingly. 
+-   Basic text input for properties of type 'unknown'. Maybe even 
+    add UI to toggle any property its input to a basic text input?
+-   Option to group properties when defining them trough the options
+    example: '[group:Colors]primary, secondary, tertiary[/group]'.
+-   UI to to vissualy outline elements on the page that use a specific property.
+-   
