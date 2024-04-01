@@ -5,6 +5,24 @@ import { parseCustomPropertiesFromComputedStyles, parseStyleTagElements, parseCu
 // import { colord } from "colord";
 // import { getFormat } from "colord";
 
+
+/*
+    Roadmap
+
+    - Scrollbar styling to fit the dark theme
+    - Nummeric values (sets) without unit, example: '255, 255, 255' or '1.05'
+    - Angle values: deg and turn
+    - Color unit toggling
+    - Option to switch to basic text input for every property, 
+      mainly useful as fallback for unknown types
+    - If value is a custom property, find the related property and 
+      set the linked and type props accordingly 
+    - Draggable ui window 
+    - Settings / info button to open a modal
+    - Link properties by dragging
+*/
+
+
 //@ts-expect-error
 window.initCpUi = (opts = {}) => {
 
