@@ -24,4 +24,5 @@ A UI tool that lists and enables live updates of all custom properties set on th
     add UI to toggle any property its input to a basic text input?
 -   Option to group properties when defining them trough the options
     example: '[group:Colors]primary, secondary, tertiary[/group]'.
--   
+
+-   Cleanup codebase, split into components
