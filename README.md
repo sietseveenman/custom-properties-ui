@@ -1,12 +1,16 @@
 # Custom property UI
 
-Roadmap
+A UI tool that lists and enables live updates of all custom properties set on the :root selector. You can provide handpicked properties to show in the UI. If you don't provide any properties, all properties found inside inline style tags and link tags will be rendered automaticaly.  
+
+## Roadmap
 
 -   Scrollbar styling to fit the dark theme
 -   Draggable ui window 
 -   Settings / info button to open a modal
 -   Link properties by dragging
 -   Change number input values by scrolling and or dragging
+-   UI to to vissualy outline elements on the page that use a specific property.
+-   UI to show if the property is used on the current page.
 
 -   Handle Nummeric values (sets) without unit, example: '255, 255, 255' or '1.05'.
 -   Handle Angle values: deg and turn.
@@ -20,5 +24,4 @@ Roadmap
     add UI to toggle any property its input to a basic text input?
 -   Option to group properties when defining them trough the options
     example: '[group:Colors]primary, secondary, tertiary[/group]'.
--   UI to to vissualy outline elements on the page that use a specific property.
 -   
