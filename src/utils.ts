@@ -44,7 +44,11 @@ export function parseStyleTagElements() {
     return parseCustomPropertiesFromCssString(bundledStyles)
 }
 
-export function parseCustomPropertiesFromCssString(cssString: string) : CustomProperty[] {
+export function parseCustomPropertiesFromCssString(string: string) : CustomProperty[] {
+    
+    // Remove outcommented properties
+    let cssString = string.replace(/\/\*[\s\S]*?\*\//g, '');
+
     const rootSelectorRegex = /:root\s*{([^}]*)}/;
     const rootSelectorMatch = cssString.match(rootSelectorRegex);
     const customProperties = [];

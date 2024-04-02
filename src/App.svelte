@@ -1,7 +1,8 @@
 <script lang="ts">
   import { tick } from 'svelte';
 	import ColorPicker, { ChromeVariant } from 'svelte-awesome-color-picker';
-  import LengthInput from './lib/LengthInput.svelte';
+  import LengthInput from './lib/inputs/LengthInput.svelte';
+  import Unknown from './lib/inputs/Unknown.svelte';
   
   import { type Props, type CustomProperty } from './types';
   
@@ -131,8 +132,12 @@
                 <LengthInput property={property}/>
         
               {:else if property.type === 'custom-property'}
+                
+                Custom property
+
+              {:else if property.type === 'unknown'}
       
-                Custom
+                <Unknown property={property} />
       
               {/if}
             </div>
@@ -170,12 +175,6 @@
 {@html style}
 
 <style>
-  /* .color-picker {
-    opacity: .5;
-    input {
-      font-size: 10px;
-    }
-  } */
   .floating-picker {
     --cp-bg-color: #1e2021;
 		--cp-border-color: #665c54;
@@ -321,15 +320,16 @@
     background-color: transparent;
     border: none;
     font-size: inherit;
-    color: var(--text);
+    font-family: monospace;
+    color: var(--highlight);
     align-items: center;
     gap: 8px;
     transform: translateX(-1px);
     cursor: pointer;
-    &:focus {
+    &:is(:focus, :hover) {
       outline: none;
       .color-picker__value {
-        color: var(--highlight)
+        color: var(--highlight-sec);
       }
     }
   }
@@ -341,7 +341,7 @@
   }
   .color-picker__value {
     letter-spacing: 0.035em;
-    transform: translateY(.05em);
+    transform: translateY(.065em);
     text-transform: uppercase;
   }
   .linked {

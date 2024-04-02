@@ -1,3 +1,5 @@
 :root {
     --from-file: 30px;
+    --primary-rgb: 255, 100, 13;
+    --primary-rgb: calc(100vw - 100px);
 }

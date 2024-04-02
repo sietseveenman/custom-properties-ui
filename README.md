@@ -14,12 +14,15 @@ A UI tool that lists and enables live updates of all custom properties set on th
 -   UI for property overwrites in nested selectors. Option to change value per selector level. 
 -   Options to save to local storage.
 -   History in top bar 'undo' and 'redo'.
+-   Exclude commented css lines
 
 -   Handle Nummeric values (sets) without unit, example: '255, 255, 255' or '1.05'.
 -   Handle Angle values: deg and turn.
 -   Handle values that use the calc() function.
 -   Handle values that use min(), max() and or clamp() functions.
 -   Handle values that use trig functions, sin() and cos().
+-   Handle situation where a custom property is used inside a function,
+    example: rgb(var(--some-rgb))
 -   Color length toggling (hex, rgb, etc).
 -   If value is a custom property, find the related property and 
     set linked and type props accordingly. 

@@ -1,6 +1,6 @@
 <script lang="ts">
-    import { parseValueWithUnit, lengthUnits } from '../utils'
-    import { type CustomProperty } from '../types'
+    import { parseValueWithUnit, lengthUnits } from '../../utils'
+    import { type CustomProperty } from '../../types'
     
     let { property } : { property: CustomProperty } = $props();
 
@@ -46,18 +46,27 @@
 
 <style scoped>
     .parsed {
-        
+        --color: var(--highlight);
         display: flex;
         gap: 4px;
+        color: var(--color);
+        width: fit-content;
+        border-bottom: 1px solid currentColor;
+        
+        &:has(:is(input, select):is(:hover, :focus) ){
+            --color: var(--highlight-sec);
+        }
 
         input {
             background-color: transparent;
             color: inherit;
             margin: 0;
-            max-width: 4ch;
+            max-width: 16ch;
             border: none;
             line-height: .5;
+            font-family: monospace;
             font-size: var(--font-size);
+            
 
             &::-webkit-outer-spin-button,
             &::-webkit-inner-spin-button {
@@ -66,11 +75,9 @@
             }
             &:focus, 
             &:hover {
-                cursor: pointer;
                 outline: none;
-                text-decoration: underline;
                 background: transparent;
-                color: var(--highlight);
+                color: var(--color);
             }
             &:hover {
                 font-weight: 500;
@@ -79,30 +86,27 @@
         }
         .length-unit {
             position: relative;
+            line-height: 1;
+            
             span{
-                font-family: sans-serif;
-           
+                font-family: monospace;
+                color: var(--hover);
                 &::after {
-                    opacity: 0;
                     content: '⌄';
                     display: inline-block;
-                    padding-left: 0.2em;
+                    padding-left: 0.1em;
+                    padding-right: 3px;
                     transform: translateY(-.2em);
                 }
             }
             &:has(select:hover, select:focus) {
                 span {
                     font-weight: 500;
-                    color: var(--highlight);
-                    text-decoration: underline;
-                    &:after {
-                        opacity: 1;
-                    }
+                    color: var(--color);
                 }
             }
             select {
                 opacity: 0;
-                height: 1em;
                 position: absolute;
                 left: 0;
                 right: 0;
