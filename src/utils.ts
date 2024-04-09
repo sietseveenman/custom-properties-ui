@@ -1,5 +1,210 @@
 import { type CustomProperty } from './types'
 
+// import * as CSStree from 'css-tree';
+
+import { lex, types, value } from "csslex";
+
+export function cpParseCSS(cssStr: string) {
+
+    /*
+        https://github.com/csstree/csstree
+        The current version does not support loose nested class selectors:
+
+        .parent-class {
+            & .nested-class { } this works
+            .nested-class { } this does not (it return node with type:'Raw' value: [string untill next closing curly])
+        }
+
+        const ast = CSStree.parse(cssStr, {
+            // parseValue: false,
+            // parseRulePrelude: true,
+            parseCustomProperty: true,
+        });
+        
+        CSStree.walk(ast, function (node) {
+            console.log(node)
+        });
+    */
+
+
+    /*
+        https://github.com/keithamus/csslex
+    */
+
+    cssStr = cssStr.replace(/\/\*[\s\S]*?\*\//g, '');
+    
+    const tokenTypes = Object.fromEntries(
+        Object.entries(types).map(([key, value]) => [value, key])
+    );
+
+    type Token = [type: typeof types[keyof typeof types], start: number, end: number]
+    const tokens: Token[] = Array.from(lex(cssStr)) 
+
+
+    const customProperties = {}
+
+    let currentSelector = ''
+    let currentMediaQuery = ''
+
+    let currentProperty = ''
+
+    /*
+        TOKEN TYPES
+        ________________
+        IDENT       : 2
+        AT_KEYWORD  : 4
+        HASH        : 5
+        DELIM       : 10
+        WHITESPACE  : 14
+        COLON       : 17
+        SEMICOLON   : 18
+        LEFT_CURLY  : 24
+        RIGHT_CURLY : 25
+    */
+
+    let cToken = null
+    
+    const isCurly = (type: number): boolean => type === 24 || type === 25
+
+    const findSelector = (fromIndex: number): null | string => {
+
+        let reachedPrevBlock = false
+        let i = fromIndex+1
+
+        let currentIdentifier = ''
+        let selector = ''
+        
+
+        while( !reachedPrevBlock && i > 0 ) {
+            i--;
+
+            const token = tokens[i];
+
+            if (token[0] === 25) reachedPrevBlock = true // }
+
+            if (token[0] === 2 && [10, 17].includes(tokens[i-1][0])) { // Found some sort of identifier with a . or : before it
+                
+                selector = `${cssStr.slice(token[1]-1, token[2])} ${selector}`.trimEnd()
+                continue;
+            }
+            // if (currentIdentifier !== '' && [10, 17].includes(token[0])) {
+            //     selector+=`${cssStr.slice(token[1], token[2])}${currentIdentifier} `
+            //     continue;
+            // }
+            if (token[0] === 5) { // HASH (includes the currentIdentifier for some reason?)
+                selector = `${cssStr.slice(token[1], token[2])} ${selector}`.trimEnd()
+                continue;
+            }
+        }
+
+        return `${selector}`
+    }
+
+    const findPropertyValue = (fromIndex:number): undefined | string => {
+        let safeEnd = (fromIndex+200)
+        let i = fromIndex
+        
+        let startIndex
+        let endIndex
+        
+        let val
+
+        while ( !val && i < safeEnd ) {
+            const token = tokens[i]
+       
+            if ( token[0] === 17 ) {
+                startIndex = token[2]+1
+            }
+            else if ( token[0] === 18 || token[0] === 25) {
+                endIndex = token[1]
+            }
+            if ( startIndex && endIndex ) {
+                val = cssStr.slice(startIndex, endIndex)
+            }
+            i++
+        }
+
+        return val;
+    }
+
+
+    for (let i = 0; i < tokens.length; i++) {
+        
+        cToken = tokens[i]
+        const cType = cToken[0]
+
+        console.log(tokenTypes[cToken[0]], cToken, cType === 2, cssStr.slice(cToken[1], cToken[2]))
+        
+        // if (isCurly(cType)) currentSelector = '';
+        
+        if ( cType === 24 ) { // LEFT_CURLY {
+            const selector = findSelector(i-1)
+            currentSelector = selector ?? ''
+            // console.log({currentSelector});
+            continue;
+        }
+
+        else if ( cType === 2 && currentSelector !== '' ) { // IDENT 
+
+            // console.log({currentSelector});
+
+            const property = cssStr.slice(cToken[1], cToken[2])
+            
+            if ( property.slice(0,2) === '--' ) {
+                currentProperty = property
+                let unit = {
+                    selector: currentSelector,
+                    value: findPropertyValue(i+1)
+                }
+                if (!customProperties[property]) {
+                    customProperties[property] = [unit]                 
+                } else {
+                    customProperties[property].push(unit)
+                }
+            }
+
+            continue;
+        }
+        
+        else if ( cType === 25 ) { // RIGHT_CURLY }
+            currentSelector = ''
+            continue;
+        } 
+
+
+        // currentSelector = cssStr.slice(cToken[1], cToken[2])
+        //         console.log(`%c ${currentSelector}` , 'background: #222; color: #bada55')
+
+        // if( cType === 14 ) continue // Skip itteration if type = whitespace
+
+        // // Check if token represents a selector
+        // // Reset the current selector when entering a new or exiting a rule block
+        // if (cType === 24 // LEFT_CURLY
+        //     || cType === 25 // RIGHT_CURLY
+        // ) {
+        //     currentSelector = '';
+        // }
+        // else if (cType === 2 // IDENT 
+        //     && tokens[i + 1] 
+        //     && tokens[i + 1][0] === 24 // prev token LEFT_CURLY
+        //  ) {
+        //     // Store the selector when encountered right after a left curly brace
+        //     currentSelector = cssStr.slice(token[1], token[2])
+        //     console.log(currentSelector)
+        // }
+        // console.log(currentSelector)
+    }
+
+    console.log(customProperties)
+    
+    return [];
+}
+
+
+
+
+
+
 export function parseCustomPropertiesFromComputedStyles( propertyNames:string[] = []): CustomProperty[] {
     return propertyNames.reduce((acc:string[], propertyName) => {
         const cleanName = propertyName.replaceAll(/[\n\s]+/g, '');
@@ -39,8 +244,10 @@ export async function fetchCSS(url: string) {
 
 export function parseStyleTagElements() {
     let bundledStyles = ''
-    const inlineStyleTags = document.querySelectorAll('style')
-    inlineStyleTags.forEach( tag =>  bundledStyles += (' ' + tag.innerText))
+    const inlineStyleTags = document.querySelectorAll('style:not([data-vite-dev-id])')
+    inlineStyleTags.forEach( tag =>  {
+        bundledStyles += (' ' + tag.innerText)
+    })
     return parseCustomPropertiesFromCssString(bundledStyles)
 }
 
@@ -61,7 +268,7 @@ export function parseCustomPropertiesFromCssString(string: string) : CustomPrope
 
         let match;
 
-        while ((match = propertyRegex.exec(rootProperties)) !== null) {
+        while ((match = propertyRegex.exec(cssString)) !== null) {
             const propertyName = match[1].trim();
             const propertyValue = match[2].trim();
             customProperties.push({

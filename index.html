@@ -36,6 +36,8 @@
         --border-color: rgb(var(--border-rgb));
         --border-width: 2px;
         --site-bg: #150b12;
+
+        --scoped-bg-color: purple;
       }
       body {
         width: 100%;
@@ -70,6 +72,13 @@
         border-radius: var(--border-radius);
         border: var(--border-width) dashed var(--border-color);
       }
+      .scoped {
+        --scoped-bg-color: coral;
+        width: 130px;
+        height: 130px;
+        background: var(--scoped-bg-color);
+        border-radius: var(--border-radius);
+      }
     </style>
   </head>
   <body>
@@ -78,6 +87,7 @@
       <h2>work all day</h2>
       <h3>dance all night</h3>
       <div class="shape"></div>
+      <div class="scoped"></div>
     </div>
     <script type="module" src="/src/main.svelte.ts"></script>
   </body>

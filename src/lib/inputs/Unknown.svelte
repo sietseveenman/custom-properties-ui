@@ -29,8 +29,10 @@
         /* text-decoration: underline; */
         /* text-underline-offset: .2em; */
         /* padding-left: 2px; */
-        border-bottom: 1px solid currentColor;
-        
+        border: 1px solid currentColor;
+        padding: .25em 0.4em .2em;
+        border-radius: 4px;
+
         &:is(:focus, :hover) {
             outline: none;
             color: var( --highlight-sec);

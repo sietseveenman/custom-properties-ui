@@ -12,7 +12,7 @@
   let isOpen = $state(initOpen)
 
   let style = $derived(
-  `<style>
+  `<style type="text/css" data-ignore="ignore">
     :root { 
         ${ customProperties.map(property => {
           const value = property.linked ? `var(${property.linked})` : property.value

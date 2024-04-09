@@ -29,7 +29,7 @@
             type="number" 
             step={stepSize}
             on:input={handleChange}
-            style={`width: ${String(parsedProperty.value).length}ch`}
+            style={`width: ${String(parsedProperty.value).length + 3}ch`}
         />
         <span class="length-unit">
             <span class="">{ parsedProperty.unit }</span>
@@ -48,21 +48,22 @@
     .parsed {
         --color: var(--highlight);
         display: flex;
-        gap: 4px;
         color: var(--color);
         width: fit-content;
-        border-bottom: 1px solid currentColor;
         
-        &:has(:is(input, select):is(:hover, :focus) ){
+        /* &:has(:is(input, select):is(:hover, :focus) ){
             --color: var(--highlight-sec);
-        }
+        } */
 
         input {
+            border: 1px solid currentColor;
+            border-top-left-radius: 4px;
+            border-bottom-left-radius: 4px;
+            padding: .25em 0 .2em .4em;
             background-color: transparent;
             color: inherit;
             margin: 0;
             max-width: 16ch;
-            border: none;
             line-height: .5;
             font-family: monospace;
             font-size: var(--font-size);
@@ -73,14 +74,11 @@
                 -webkit-appearance: none;
                 margin: 0;
             }
-            &:focus, 
-            &:hover {
+            &:is(:hover,:focus) {
+                --color: var(--highlight-sec);
                 outline: none;
                 background: transparent;
                 color: var(--color);
-            }
-            &:hover {
-                font-weight: 500;
             }
 
         }
@@ -88,22 +86,28 @@
             position: relative;
             line-height: 1;
             
-            span{
+            border: 1px solid var(--color);
+            color: var(--color);
+            border-top-right-radius: 4px;
+            border-bottom-right-radius: 4px;
+            padding: .25em .4em .2em;
+            padding-left: .35em;
+            margin-left: -1px;
+            
+            span {
+                position: relative;
                 font-family: monospace;
                 color: var(--hover);
                 &::after {
                     content: '⌄';
                     display: inline-block;
-                    padding-left: 0.1em;
-                    padding-right: 3px;
+                    padding-left: 0.225em;
+                    /* padding-right: 1px; */
                     transform: translateY(-.2em);
                 }
             }
-            &:has(select:hover, select:focus) {
-                span {
-                    font-weight: 500;
-                    color: var(--color);
-                }
+            &:has(select:is(:hover, :focus)) {
+                --color: var(--highlight-sec);
             }
             select {
                 opacity: 0;

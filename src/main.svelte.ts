@@ -1,7 +1,7 @@
 import App from './App.svelte'
 import { mount } from 'svelte'
 import { type Props, type CustomProperty } from './types'
-import { parseCustomPropertiesFromComputedStyles, parseStyleTagElements, parseCustomPropertiesFromCssString, fetchCSS } from './utils'
+import { cpParseCSS, parseCustomPropertiesFromComputedStyles, parseStyleTagElements, parseCustomPropertiesFromCssString, fetchCSS } from './utils'
 // import { colord } from "colord";
 // import { getFormat } from "colord";
 
@@ -48,7 +48,7 @@ window.initCpUi = (opts = {}) => {
         linkTags.forEach(link => {
             fetchCSS(link.href).then(text => props.customProperties = [
                 ...props.customProperties,
-                ...parseCustomPropertiesFromCssString(text)
+                ...cpParseCSS(text)
             ])
         })
     }

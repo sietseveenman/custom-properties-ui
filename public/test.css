@@ -1,5 +1,89 @@
 :root {
-    --from-file: 30px;
+    --from-file: red;
     --primary-rgb: 255, 100, 13;
-    --primary-rgb: calc(100vw - 100px);
+    --text-base: 15px;
 }
+.thing {
+    color: red;
+
+    --text-base: 20px;
+    /* ~ 
+    + 
+    >  */
+
+    .test:has(.inner:hover) {
+        --text-base: 12px;
+    }
+
+    &.nested-unit {
+        --text-base: 1.6rem;
+    }
+}
+
+.double .trouble {
+    --text-base: 2vw;
+}
+
+#scoped {
+    @media (min-width: 300px) {
+        opacity: .2;
+    }
+}
+
+/* .some-selector {
+    --from-file: blue;
+    
+    &.is-active {
+        --doodle: pink;
+    }
+
+    & .nested-selector {
+        --from-file: goldenrod;
+    }
+    
+    .test {
+        --testing: green;
+    }
+  
+}
+
+
+@media (min-width: 300px) {
+    .some-selector {
+        --from-file: lime;
+    }
+    .another-selector {
+        --from-file: purple;
+    }
+    :root {
+        --primary-rgb: 30, 20, 10;
+    }
+} */
+
+/* const obj = {
+    "COMMENT": 1,
+    "IDENT": 2,
+    "FUNCTION": 3,
+    "AT_KEYWORD": 4,
+    "HASH": 5,
+    "STRING": 6,
+    "BAD_STRING": 7,
+    "URL": 8,
+    "BAD_URL": 9,
+    "DELIM": 10,
+    "NUMBER": 11,
+    "PERCENTAGE": 12,
+    "DIMENSION": 13,
+    "WHITESPACE": 14,
+    "CDO": 15,
+    "CDC": 16,
+    "COLON": 17,
+    "SEMICOLON": 18,
+    "COMMA": 19,
+    "LEFT_SQUARE": 20,
+    "RIGHT_SQUARE": 21,
+    "LEFT_PAREN": 22,
+    "RIGHT_PAREN": 23,
+    "LEFT_CURLY": 24,
+    "RIGHT_CURLY": 25
+}; */
