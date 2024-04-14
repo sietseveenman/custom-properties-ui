@@ -1,8 +1,43 @@
+/* 
+    1   COMMENT 
+    2   IDENT    
+    3   FUNCTION 
+    4   AT_KEYWORD 
+    5   HASH 
+    6   STRING 
+    7   BAD_STRING 
+    8   URL 
+    9   BAD_URL 
+    10  DELIM . or & or *
+    11  NUMBER 
+    12  PERCENTAGE 
+    13  DIMENSION 
+    14  WHITESPACE 
+    15  CDO 
+    16  CDC 
+    17  COLON 
+    18  SEMICOLON 
+    19  COMMA 
+    20  LEFT_SQUARE 
+    21  RIGHT_SQUARE 
+    22  LEFT_PAREN 
+    23  RIGHT_PAREN 
+    24  LEFT_CURLY 
+    25  RIGHT_CURLY  
+*/
+
 /* :root {
     --from-file: red;
     --primary-rgb: 255, 100, 13;
     --text-base: 15px;
 } */
+
+#foo .this-is-nested {
+    --text-color: #fff;
+}
+.this {
+    --text-color: coral;
+}
 .thing {
     color: red;
     --text-base: 20px;
@@ -58,31 +93,3 @@
         --primary-rgb: 30, 20, 10;
     }
 } */
-
-/* const obj = {
-    "COMMENT": 1,
-    "IDENT": 2,
-    "FUNCTION": 3,
-    "AT_KEYWORD": 4,
-    "HASH": 5,
-    "STRING": 6,
-    "BAD_STRING": 7,
-    "URL": 8,
-    "BAD_URL": 9,
-    "DELIM": 10,
-    "NUMBER": 11,
-    "PERCENTAGE": 12,
-    "DIMENSION": 13,
-    "WHITESPACE": 14,
-    "CDO": 15,
-    "CDC": 16,
-    "COLON": 17,
-    "SEMICOLON": 18,
-    "COMMA": 19,
-    "LEFT_SQUARE": 20,
-    "RIGHT_SQUARE": 21,
-    "LEFT_PAREN": 22,
-    "RIGHT_PAREN": 23,
-    "LEFT_CURLY": 24,
-    "RIGHT_CURLY": 25
-}; */
