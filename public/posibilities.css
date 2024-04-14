@@ -1,0 +1,70 @@
+:root { }
+
+.some-class { }
+
+#some-id { }
+
+[data-thing] { }
+  
+.some-class .inline-nest { }
+
+.some-class {
+    .nested-nest { }
+    #nedtend { }
+    * {}
+    & .nested-nest { }
+    &.nested-nest { }
+}
+
+.somthing > .direct-nest { }
+
+.something {
+    & > .direct-nest { }
+}
+
+.some-class .nested-thing:has(.something:checked) #unit:focus {
+
+}
+
+/* 
+    starting with a delim ". or &", hash "#", colon ":" or bracket "[" 
+    and directly folowed by a identifier means this is the start of a selector
+    the selector extends until the first instance of a curly bracked "{"
+
+    from that opening curly, loop until the next closing curly. 
+
+    when the closing curly is found. Run a function to find custom properties within this block
+    meaning the index between "{" and "}"
+    
+    If there is a new opening curly before finding a closing curly
+    it means there is a new selector so rerun this recursively
+*/
+
+
+/* const obj = {
+    1   COMMENT 
+    2   IDENT    
+    3   FUNCTION 
+    4   AT_KEYWORD 
+    5   HASH 
+    6   STRING 
+    7   BAD_STRING 
+    8   URL 
+    9   BAD_URL 
+    10  DELIM . or & or *
+    11  NUMBER 
+    12  PERCENTAGE 
+    13  DIMENSION 
+    14  WHITESPACE 
+    15  CDO 
+    16  CDC 
+    17  COLON 
+    18  SEMICOLON 
+    19  COMMA 
+    20  LEFT_SQUARE 
+    21  RIGHT_SQUARE 
+    22  LEFT_PAREN 
+    23  RIGHT_PAREN 
+    24  LEFT_CURLY 
+    25  RIGHT_CURLY 
+} */

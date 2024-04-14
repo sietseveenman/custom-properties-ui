@@ -1,35 +1,6 @@
 import { type CustomProperty } from './types'
 
-// import * as CSStree from 'css-tree';
-
-import { lex, types, value } from "csslex";
-
 export function cpParseCSS(cssStr: string) {
-
-    /*
-        https://github.com/csstree/csstree
-        The current version does not support loose nested class selectors:
-
-        .parent-class {
-            & .nested-class { } this works
-            .nested-class { } this does not (it return node with type:'Raw' value: [string untill next closing curly])
-        }
-
-        const ast = CSStree.parse(cssStr, {
-            // parseValue: false,
-            // parseRulePrelude: true,
-            parseCustomProperty: true,
-        });
-        
-        CSStree.walk(ast, function (node) {
-            console.log(node)
-        });
-    */
-
-
-    /*
-        https://github.com/keithamus/csslex
-    */
 
     cssStr = cssStr.replace(/\/\*[\s\S]*?\*\//g, '');
     
@@ -83,7 +54,7 @@ export function cpParseCSS(cssStr: string) {
             if (token[0] === 25) reachedPrevBlock = true // }
 
             if (token[0] === 2 && [10, 17].includes(tokens[i-1][0])) { // Found some sort of identifier with a . or : before it
-                
+
                 selector = `${cssStr.slice(token[1]-1, token[2])} ${selector}`.trimEnd()
                 continue;
             }
