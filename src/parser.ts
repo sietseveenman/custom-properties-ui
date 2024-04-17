@@ -1,5 +1,5 @@
 import { lex, types, value } from "csslex";
-
+import { nativeSelectors } from './utils';
 /*
     https://github.com/keithamus/csslex
 */
@@ -24,50 +24,114 @@ export const tokenTypes = Object.fromEntries(
 */
 
 type Block = {
+    parent: undefined | Block;
     selector: string;
     properties: Array<{ name: string; value: string; }>;
-    children: Block;
+    children: BlockTree;
+}
+
+interface BlockTree {
+    [key: string]: Block;
 }
 
 export function parseCSS(source:string) {
     
 
-    let blockPropTree = {}
+    let blockTree:BlockTree = {}
 
     // Remove comments from source string
     source = source.replace(/\/\*[\s\S]*?\*\//g, ''); 
     const tokens: Token[] = Array.from( lex(source) ) 
     
     let at = 0
-    let selector;
+    let currentBlock: undefined | Block = undefined;
+    let inProperty = false;
 
     const find_custom_property = (token: Token, index: number): boolean => { 
         return token[0] === 2 && source.slice(token[1],token[2]).slice(0, 2) === '--' 
     }
 
-    const find_selector = (token: Token, index: number): undefined | string  => {
-        const tType = token[0]
-        // Type = HASH
-        if (tType === 5) return source.slice(token[1], token[2]);
-        // Type = DELIM . or & or *
-        // if (tType === 10)
+    const is_native_selector = (identifier:string):boolean => {
+        return nativeSelectors.includes(identifier)
+    }
 
-        return undefined;
+    const setBlock = (selector:string) => {
+        selector = selector.trim()
+        if (!currentBlock) {
+            if( !blockTree.hasOwnProperty(selector)) {
+                blockTree[selector] = {
+                    parent: undefined,
+                    selector,
+                    properties: [],
+                    children: {},
+                }
+                currentBlock = blockTree[selector]
+            }
+        }
+        else if (!currentBlock.children.hasOwnProperty(selector)) {
+            currentBlock.children[selector] = {
+                parent: currentBlock,
+                selector,
+                properties: [],
+                children: {},
+            }
+            currentBlock = currentBlock.children[selector]
+        }
+    }
+
+    const addPropertyToBlock = () => {
+
     }
 
     const chomp = () => {
 
         const token = tokens[at];
-        console.log(tokenTypes[token[0]], source.slice(token[1], token[2]))
+        const type = token[0]
 
-        selector = find_selector(token, at)
-        console.log(selector)
+        console.log(`at:${at}`,tokenTypes[type], source.slice(token[1], token[2]))
+
+        if (type === 17 && currentBlock) {
+            inProperty = true
+        }
+        
+        else if (type === 18) {
+            inProperty = false
+        }
+
+        // handle HASH '#somestring' or '#FFF'
+        else if (type === 5 && !inProperty) {
+            setBlock(source.slice(token[1], token[2]))
+        }
+
+        // handle delim ('.' or '&' or '*')
+        else if (type === 10 || is_native_selector(source.slice(token[1], token[2]))) {
+            for (let i = at+1; i < tokens.length; i++) {
+                const successiveToken = tokens[i];
+                if (successiveToken[0] === 24) { // found left curly 
+                    at = i;
+                    setBlock(source.slice(token[1], successiveToken[1]))
+                    break;
+                }
+            }
+        }
+
+        else if (type === 25) { // found right curly
+            currentBlock = currentBlock?.parent;
+        }
+
+
+       
+        
+        // if( currentBlock)  console.log(currentBlock)
+        
+
         at++;
 
         if (at < tokens.length) chomp()
     }; chomp()
     
 
+    console.log(blockTree)
 
     return []
 }

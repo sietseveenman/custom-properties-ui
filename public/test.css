@@ -26,13 +26,48 @@
     25  RIGHT_CURLY  
 */
 
+
+/* 
+    hash = selector if not a property value
+*/
+
+h1 {
+    color: red;
+}
+
+.this-is-a-selector {
+
+    color: red;
+    border-radius: 20px;
+    background-color: #FFF;
+    --color-primary: pink;
+
+    .nested-selector {
+        padding: 0;
+        margin: 0;
+        --color-primary: orange;
+    }
+}
+
+#root-id-selector {
+    --color-secondary: #EEE;
+}
+
+.something {
+    border-radius: 10px;
+
+    #nested-id-selector {
+        transform: translate(20px);
+    }
+}
+
 /* :root {
     --from-file: red;
     --primary-rgb: 255, 100, 13;
     --text-base: 15px;
 } */
 
-#foo .this-is-nested {
+/* #foo .this-is-nested {
     --text-color: #fff;
 }
 .this {
@@ -45,14 +80,14 @@
     .nesting {
         --text-base: red;
     }
-    /* .test:has(.inner:hover) {
+    .test:has(.inner:hover) {
         --text-base: 12px;
     }
 
     &.nested-unit {
         --text-base: 1.6rem;
-    } */
-}
+    }
+} */
 /* 
 .double .trouble {
     --text-base: 2vw;
