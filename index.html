@@ -82,13 +82,23 @@
     </style>
   </head>
   <body>
-    <div class="">
-      <h1>Jumping foxes</h1>
+    <div class="this-is-a-selector">
+      <h1 class="some">Jumping foxes</h1>
       <h2>work all day</h2>
       <h3>dance all night</h3>
       <div class="shape"></div>
-      <div class="scoped"></div>
+      <small>Small text</small>
+      <div class="scoped nested-selector">
+        <div class="this">this</div>
+      </div>
     </div>
+    <div class="i-am-selecta">
+      <p>HEY HEY</p>
+      <div>
+        <p>HEY HEY HEY</p>
+      </div>
+    </div>
+    <div class="scoped nested-selector"></div>
     <script type="module" src="/src/main.svelte.ts"></script>
   </body>
 </html>

@@ -62,5 +62,5 @@ window.initCpUi = (opts = {}) => {
 
 //@ts-ignore
 window.initCpUi({
-    initOpen: true
+    initOpen: false
 })

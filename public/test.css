@@ -3,12 +3,12 @@
     2   IDENT    
     3   FUNCTION 
     4   AT_KEYWORD 
-    5   HASH 
+    5   HASH | selector #some-id or property value #FFF
     6   STRING 
     7   BAD_STRING 
     8   URL 
     9   BAD_URL 
-    10  DELIM . or & or *
+    10  DELIM | ., &b, *, +, >, <, ~, =, -, /, ?, $, #, ^, !, |
     11  NUMBER 
     12  PERCENTAGE 
     13  DIMENSION 
@@ -27,27 +27,41 @@
 */
 
 
-/* 
-    hash = selector if not a property value
-*/
+h2 {
+    color : red;
+    --doodle: 2px;
+    
+    span {
+        --this-prop: coral;
+    }
 
-h1 {
-    color: red;
-}
-
-.this-is-a-selector {
-
-    color: red;
-    border-radius: 20px;
-    background-color: #FFF;
-    --color-primary: pink;
-
-    .nested-selector {
-        padding: 0;
-        margin: 0;
-        --color-primary: orange;
+    .nested {
+        opacity: 1;
+        --more-things: 100 100 100;
     }
 }
+.this-is-a-selector {
+   
+    ::selection {
+        color: red!important;
+        background-color: yellow!important;
+    } 
+
+    :has(.this) {
+        transform: rotate(20deg);
+        --op: 20px;
+    }
+
+    &:after {
+        content: 'pooop';
+        color: green;
+    }
+
+    .nested-selector {
+        opacity: .4;
+    }
+}
+
 
 #root-id-selector {
     --color-secondary: #EEE;
@@ -59,63 +73,15 @@ h1 {
     #nested-id-selector {
         transform: translate(20px);
     }
-}
+} 
 
-/* :root {
+:root {
     --from-file: red;
     --primary-rgb: 255, 100, 13;
     --text-base: 15px;
-} */
-
-/* #foo .this-is-nested {
-    --text-color: #fff;
 }
-.this {
-    --text-color: coral;
-}
-.thing {
-    color: red;
-    --text-base: 20px;
-    
-    .nesting {
-        --text-base: red;
-    }
-    .test:has(.inner:hover) {
-        --text-base: 12px;
-    }
 
-    &.nested-unit {
-        --text-base: 1.6rem;
-    }
-} */
 /* 
-.double .trouble {
-    --text-base: 2vw;
-}
-
-#scoped {
-    @media (min-width: 300px) {
-        opacity: .2;
-    }
-} */
-
-/* .some-selector {
-    --from-file: blue;
-    
-    &.is-active {
-        --doodle: pink;
-    }
-
-    & .nested-selector {
-        --from-file: goldenrod;
-    }
-    
-    .test {
-        --testing: green;
-    }
-  
-}
-
 
 @media (min-width: 300px) {
     .some-selector {
