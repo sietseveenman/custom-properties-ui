@@ -8,7 +8,7 @@
     7   BAD_STRING 
     8   URL 
     9   BAD_URL 
-    10  DELIM | ., &b, *, +, >, <, ~, =, -, /, ?, $, #, ^, !, |
+    10  DELIM | ., &, *, +, >, <, ~, =, -, /, ?, $, #, ^, !, |
     11  NUMBER 
     12  PERCENTAGE 
     13  DIMENSION 
@@ -25,7 +25,6 @@
     24  LEFT_CURLY 
     25  RIGHT_CURLY  
 */
-
 
 h2 {
     color : red;
@@ -73,6 +72,9 @@ h2 {
     #nested-id-selector {
         transform: translate(20px);
     }
+    @media (min-width: 300px) {
+        --primary-border-color: pink;
+    }
 } 
 
 :root {
@@ -81,7 +83,7 @@ h2 {
     --text-base: 15px;
 }
 
-/* 
+
 
 @media (min-width: 300px) {
     .some-selector {
@@ -93,4 +95,4 @@ h2 {
     :root {
         --primary-rgb: 30, 20, 10;
     }
-} */
+}

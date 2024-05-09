@@ -22,17 +22,6 @@ export const tokenTypes = Object.fromEntries(
     Object.entries(types).map(([key, value]) => [value, key])
 );
 
-
-/*
-    NOTE:
-        Might need to keep track of more specific current "context" to handle DELIM is a specific way
-        For example At root level a selector can only begin with the DELIM value of . or a COLON directly followed by an ident
-        Right now currentBlock keeps track of this 
-
-        currentProperty could keep track of state where DELIM has a different meaning all over again?
-
-*/
-
 export function parseCSS(source:string) {
     source = source.replace(/\/\*[\s\S]*?\*\//g, ''); // Remove comments from source string
     
@@ -47,6 +36,9 @@ export function parseCSS(source:string) {
     const 
     tokenValue = (token:Token): string => {
         return source.slice(token[1], token[2]);
+    },
+    is_at_keyword = (token: Token): boolean => {
+        return token[0] === 4;
     },
     is_star = (token: Token): boolean => {
         return token[0] === 10 && tokenValue(token) === '*';
@@ -69,7 +61,6 @@ export function parseCSS(source:string) {
     is_pseudo_selector = (token: Token):boolean => {
         if (token[0] !== 17) return false;
         
-        console.log('COLON, might be psuedo')
         let itIs = false
         for (let i = at+1; i < tokens.length; i++) {
             const successiveToken = tokens[i];
@@ -92,19 +83,18 @@ export function parseCSS(source:string) {
         return itIs;
     }
 
-    const findOpeningCurlyAndSetBlock = (token:Token) => {
-        console.log(`Find opening curly for`, token )
+    const findOpeningCurlyAndsetSelectorBlock = (token:Token) => {
         for (let i = at+1; i < tokens.length; i++) {
             const successiveToken = tokens[i];
             if (successiveToken[0] === 24) { // found left curly 
                 at = i;
-                setBlock(source.slice(token[1], successiveToken[1]))
+                setSelectorBlock(source.slice(token[1], successiveToken[1]))
                 break;
             }
         }
     }
 
-    const setBlock = (selector:string) => {
+    const setSelectorBlock = (selector:string) => {
         selector = selector.trim()
         if (!currentBlock) {
             if( !blockTree.hasOwnProperty(selector)) {
@@ -128,19 +118,6 @@ export function parseCSS(source:string) {
         }
     }
 
-    // CONTINUE HERE SIETSE, search for the semicolon (that ends the property value)
-    // if the property is not closed properly, further 
-    /*
-        --dit: pink
-        --whoops: coral;
-
-        the browser will not read the --whoops property but it will read --dit with a value of 'pink --whoops: coral'
-        so it should be ignored and not stored
-
-        anything after a property that is not closed by a ; will be taken as the value, including nested selectors
-        so keep looping and noting to ignore all successive token untill the closing ; or the closing curly of the current block level
-        so finding an opening curly means that yet another closing curly needs to be found and then keep checking for a closing curly of semicolon
-    */
     const findAndParseProperty = (token:Token) => {
 
         if (token[0] !== 2) return; 
@@ -186,12 +163,9 @@ export function parseCSS(source:string) {
         
         property.value = source.slice(sliceStart, sliceEnd).trim();
         
-        
         if( property.name.slice(0, 2) === '--' ) {
             currentBlock?.properties.push(property)
         }
-        
-        console.log({currentBlock,property})
 
         at = next
 
@@ -203,32 +177,29 @@ export function parseCSS(source:string) {
         const type = token[0]
 
         console.log(`%c chomp at:${at} | ${tokenTypes[type]} | ${tokenValue(token)}`, 'color: green')
-        
-        if (!currentProperty) {
-            if (
-                currentBlock && is_amp(token)
-                || is_star(token) 
-                || is_id_selector(token)
-                || is_native_selector(token)
-                || is_pseudo_selector(token)
-                || is_class_selector(token)
-            ) {
-                findOpeningCurlyAndSetBlock(token)
-            }
-        }
-        
-        if (type === 25) { // RIGHT CURLY
-            currentBlock = currentBlock?.parent;
-            console.log('closing curly', currentBlock)
-        }
 
+        if (
+            currentBlock && is_amp(token)
+            || is_star(token) 
+            || is_id_selector(token)
+            || is_native_selector(token)
+            || is_pseudo_selector(token)
+            || is_class_selector(token)
+            || is_at_keyword(token)
+        ) {
+            findOpeningCurlyAndsetSelectorBlock(token)
+        }
+     
         if (currentBlock) findAndParseProperty(token);
+        
+        // RIGHT CURLY
+        if (type === 25) currentBlock = currentBlock?.parent;
 
         at++; if (at < tokens.length) chomp();
         
     }; chomp();
 
 
-    console.log(blockTree)
+    console.log({blockTree})
     return []
 }
